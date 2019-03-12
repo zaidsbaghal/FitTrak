@@ -1,5 +1,6 @@
 package com.example.fitnesstracker;
 
+import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -29,4 +30,11 @@ public class loginActivity extends AppCompatActivity {
 
         handler.postDelayed(runnable,2000); // Timeout for the splash screen
     }
+
+    // Goes to sign up activity when clicked
+    public void goToSignUp(View view){
+        Intent intent = new Intent(this, signUpActivity.class);
+        startActivity(intent);
+    }
+
 }
