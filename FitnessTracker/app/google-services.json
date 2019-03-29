@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1006969696929",
+    "firebase_url": "https://fitnesstracker-db271.firebaseio.com",
+    "project_id": "fitnesstracker-db271",
+    "storage_bucket": "fitnesstracker-db271.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1006969696929:android:10081216ee59af8e",
+        "android_client_info": {
+          "package_name": "com.example.fitnesstracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1006969696929-u96sl50rvk52868enpgd5oooo3lhg135.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.fitnesstracker",
+            "certificate_hash": "3e958eaf89cb21aab24cc25db8f76f8a0d7f2a16"
+          }
+        },
+        {
+          "client_id": "1006969696929-7gs4mf9rqbviggp3s9uhi1jna2lqemni.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcPQadjBWLgX5BtQZilhygyAoltb9whp0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1006969696929-7gs4mf9rqbviggp3s9uhi1jna2lqemni.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
