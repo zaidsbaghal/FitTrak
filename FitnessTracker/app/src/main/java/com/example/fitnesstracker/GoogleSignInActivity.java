@@ -1,17 +1,14 @@
 package com.example.fitnesstracker;
 
 import android.content.Intent;
-import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.fitnesstracker.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -25,7 +22,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-public abstract class loginActivity extends com.google.firebase.quickstart.auth.java.BaseActivity implements
+
+/**
+ * Demonstrate Firebase Authentication using a Google ID Token.
+ */
+public class GoogleSignInActivity extends com.google.firebase.quickstart.auth.java.BaseActivity implements
         View.OnClickListener {
 
     private static final String TAG = "GoogleActivity";
@@ -39,30 +40,17 @@ public abstract class loginActivity extends com.google.firebase.quickstart.auth.
     private TextView mStatusTextView;
     private TextView mDetailTextView;
 
-
-    RelativeLayout rellay1, rellay2;
-
-    Handler handler = new Handler();
-    Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            rellay1.setVisibility(View.VISIBLE);
-            rellay2.setVisibility(View.VISIBLE);
-        }
-    };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-
+        setContentView(R.layout.activity_google);
 
         // Views
         mStatusTextView = findViewById(R.id.status);
         mDetailTextView = findViewById(R.id.detail);
 
         // Button listeners
-        findViewById(R.id.googleLoginBtn).setOnClickListener(this);
+        findViewById(R.id.signInButton).setOnClickListener(this);
         findViewById(R.id.signOutButton).setOnClickListener(this);
         findViewById(R.id.disconnectButton).setOnClickListener(this);
 
@@ -82,13 +70,15 @@ public abstract class loginActivity extends com.google.firebase.quickstart.auth.
         // [END initialize_auth]
     }
 
+    // [START on_start_check_user]
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
-
+        // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         updateUI(currentUser);
     }
+    // [END on_start_check_user]
 
     // [START onactivityresult]
     @Override
@@ -208,12 +198,4 @@ public abstract class loginActivity extends com.google.firebase.quickstart.auth.
             revokeAccess();
         }
     }
-
-    // Goes to sign up activity when clicked
-    public void goToSignUp(View view){
-        Intent intent = new Intent(this, signUpActivity.class);
-        startActivity(intent);
-    }
-
-
 }

@@ -10,4 +10,13 @@
 
     <color name="gradStart">#3E4FB2</color>
     <color name="gradStop">#7287FF</color>
+
+    <!-- Google Sign in colors -->
+    <color name="colorPrimaryGoogle">#039BE5</color>
+    <color name="colorPrimaryDarkGoogle">#0288D1</color>
+    <color name="colorAccentGoogle">#FFA000</color>
+
+    <color name="grey_100">#F5F5F5</color>
+    <color name="grey_300">#E0E0E0</color>
+    <color name="grey_500">#9E9E9E</color>
 </resources>
