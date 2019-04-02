@@ -12,7 +12,8 @@
         <activity android:name=".mainLogActivity"></activity>
         <activity
             android:name=".loginActivity"
-            android:windowSoftInputMode="adjustPan">
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

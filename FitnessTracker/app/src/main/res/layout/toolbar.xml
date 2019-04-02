@@ -6,6 +6,6 @@
     android:background="@color/gradStart"
     android:elevation="4dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-    app:title="FitApp">
-
+    app:title="FitApp"
+    app:popupTheme="@style/PopupMenuStyle">
 </android.support.v7.widget.Toolbar>

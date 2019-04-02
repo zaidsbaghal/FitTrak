@@ -8,7 +8,8 @@
         android:id="@+id/calendar"
         android:title="Calendar"
         android:icon="@drawable/ic_baseline_calendar_today_24px"
-        app:showAsAction="always"/>
+        app:showAsAction="always"
+        android:iconTint="@color/white"/>
 
     <item
         android:id="@+id/settings"

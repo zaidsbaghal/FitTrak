@@ -32,6 +32,7 @@ public class mainLogActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme(R.style.AppTheme);
         setContentView(R.layout.activity_main_log);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
