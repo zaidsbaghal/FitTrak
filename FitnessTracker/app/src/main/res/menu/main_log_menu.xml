@@ -5,6 +5,12 @@
     tools:context=".mainLogActivity">
 
     <item
+        android:id="@+id/calendar"
+        android:title="Calendar"
+        android:icon="@drawable/ic_baseline_calendar_today_24px"
+        app:showAsAction="always"/>
+
+    <item
         android:id="@+id/settings"
         android:title="Settings"
         app:showAsAction="never"

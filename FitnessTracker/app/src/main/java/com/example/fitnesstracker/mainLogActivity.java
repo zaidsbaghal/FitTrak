@@ -61,11 +61,15 @@ public class mainLogActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    // Options menu click actions
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.logOut:
                 signOut();
+                return true;
+            case R.id.settings:
+                // Action goes here
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
