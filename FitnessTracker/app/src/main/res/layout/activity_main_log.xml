@@ -13,7 +13,7 @@
         tools:layout_editor_absoluteY="173dp" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/logEmptyTextView"
         android:layout_width="149dp"
         android:layout_height="32dp"
         android:layout_marginStart="8dp"

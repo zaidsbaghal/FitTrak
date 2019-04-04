@@ -1,5 +1,8 @@
 package com.example.fitnesstracker;
 
+import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +13,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.TextView;
+import android.support.v4.app.DialogFragment;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -19,15 +25,21 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import com.google.android.gms.tasks.Task;
+import android.widget.DatePicker;
+import android.widget.TextView;
+import java.text.DateFormat;
+import java.util.Calendar;
+
 import static com.example.fitnesstracker.R.id.logOut;
 
 public class mainLogActivity extends AppCompatActivity {
 
-    // [START declare_auth]
-    private FirebaseAuth mAuth;
-    // [END declare_auth]
-
-    private GoogleSignInClient mGoogleSignInClient;
+    private FirebaseAuth mAuth; // Firebase authentication
+    private GoogleSignInClient mGoogleSignInClient; // Google sign in client
+    private DatePickerDialog calendar; // Popup calendar selector
+    private TextView date;
+    private int mYear, mMonth, mDay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,20 +50,16 @@ public class mainLogActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // [START config_signin]
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken("79837694775-qo77r15dake58is1hefim29ocb33sgm8.apps.googleusercontent.com")
                 .requestEmail()
                 .build();
-        // [END config_signin]
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        // [START initialize_auth]
-        // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
-        // [END initialize_auth]
+
     }
 
 
@@ -72,6 +80,8 @@ public class mainLogActivity extends AppCompatActivity {
             case R.id.settings:
                 // Action goes here
                 return true;
+            case R.id.calendarBtn:
+                showCalendar();
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -98,5 +108,29 @@ public class mainLogActivity extends AppCompatActivity {
             Intent intent = new Intent(this, loginActivity.class);
             startActivity(intent);
         }
+    }
+
+    @SuppressLint("NewApi")
+    public void showCalendar() {
+
+        // Get Current Date
+        final Calendar c = Calendar.getInstance();
+        mYear = c.get(Calendar.YEAR);
+        mMonth = c.get(Calendar.MONTH);
+        mDay = c.get(Calendar.DAY_OF_MONTH);
+        date = findViewById(R.id.logEmptyTextView);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, R.style.datepicker,
+                new DatePickerDialog.OnDateSetListener() {
+
+                    @Override
+                    public void onDateSet(DatePicker view, int year,
+                                          int monthOfYear, int dayOfMonth) {
+
+                        date.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+
+                    }
+                }, mYear, mMonth, mDay);
+        datePickerDialog.show();
     }
 }
