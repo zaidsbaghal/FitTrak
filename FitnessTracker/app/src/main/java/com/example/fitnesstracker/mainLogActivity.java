@@ -28,13 +28,26 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.android.gms.tasks.Task;
 import android.widget.DatePicker;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.text.DateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import com.google.gson.Gson;
+
 
 import static com.example.fitnesstracker.R.id.logOut;
 
 public class mainLogActivity extends AppCompatActivity {
 
+    private TextView ExerciseTextView;
     private FirebaseAuth mAuth; // Firebase authentication
     private GoogleSignInClient mGoogleSignInClient; // Google sign in client
     private DatePickerDialog calendar; // Popup calendar selector
@@ -47,6 +60,8 @@ public class mainLogActivity extends AppCompatActivity {
         setTheme(R.style.AppTheme);
         setContentView(R.layout.activity_main_log);
 
+
+        // Toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -55,11 +70,43 @@ public class mainLogActivity extends AppCompatActivity {
                 .requestIdToken("79837694775-qo77r15dake58is1hefim29ocb33sgm8.apps.googleusercontent.com")
                 .requestEmail()
                 .build();
-
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
         mAuth = FirebaseAuth.getInstance();
 
+        // Retrofit
+        ExerciseTextView = findViewById(R.id.text_view_result);
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://api.myjson.com/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        APIHolder apiHolder = retrofit.create(APIHolder.class);
+
+        Call<List<Exercise>> call = apiHolder.getExercises();
+
+        call.enqueue(new Callback<List<com.example.fitnesstracker.Exercise>>() {
+            @Override
+            public void onResponse(Call<List<com.example.fitnesstracker.Exercise>> call, Response<List<com.example.fitnesstracker.Exercise>> response) {
+                if (!response.isSuccessful()){
+                    ExerciseTextView.setText("Code " + response.code());
+                    return;
+                }
+
+                List<Exercise> exercises = Arrays.asList(); // List of exercises
+
+                for (Exercise exercise : exercises){ // For each exercise in the exercises list
+                    String content = "";
+                    content += "Name " + exercise.getName() + "\n";
+
+                    ExerciseTextView.append(content);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<com.example.fitnesstracker.Exercise>> call, Throwable t) {
+                ExerciseTextView.setText(t.getMessage()); // Error Message
+            }
+        });
     }
 
 
