@@ -50,17 +50,15 @@
         app:layout_constraintTop_toBottomOf="@+id/SignUp" />
 
     <EditText
-        android:id="@+id/editTextUsername"
+        android:id="@+id/loginEditTextEmail"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginStart="24dp"
-        android:layout_marginLeft="24dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="24dp"
-        android:layout_marginRight="24dp"
         android:background="@drawable/et_bg"
         android:fontFamily="sans-serif-light"
-        android:hint="Username"
+        android:hint="Email"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
         android:textColor="@color/white"
@@ -73,7 +71,7 @@
 
 
     <EditText
-        android:id="@+id/editTextPassword"
+        android:id="@+id/loginEditTextPassword"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginStart="24dp"
@@ -93,7 +91,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextUsername" />
+        app:layout_constraintTop_toBottomOf="@+id/loginEditTextEmail" />
 
     <TextView
         android:id="@+id/SignUp"
@@ -109,14 +107,12 @@
         app:layout_constraintTop_toBottomOf="@+id/imgView_logo" />
 
     <Button
-        android:id="@+id/buttonLogin"
+        android:id="@+id/createAccountBTN"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginTop="50dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         android:background="@drawable/btn_bg"
         android:fontFamily="sans-serif-medium"
         android:paddingLeft="70dp"
@@ -127,7 +123,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextPassword" />
+        app:layout_constraintTop_toBottomOf="@+id/loginEditTextPassword" />
 
 
 </android.support.constraint.ConstraintLayout>

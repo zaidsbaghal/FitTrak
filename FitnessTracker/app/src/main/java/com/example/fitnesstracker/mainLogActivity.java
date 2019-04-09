@@ -1,21 +1,21 @@
 package com.example.fitnesstracker;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.FragmentManager;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
-import android.support.v4.app.DialogFragment;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -25,12 +25,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import com.google.android.gms.tasks.Task;
-import android.widget.DatePicker;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
@@ -40,10 +39,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import com.google.gson.Gson;
-
-
-import static com.example.fitnesstracker.R.id.logOut;
 
 public class mainLogActivity extends AppCompatActivity {
 
@@ -60,10 +55,14 @@ public class mainLogActivity extends AppCompatActivity {
         setTheme(R.style.AppTheme);
         setContentView(R.layout.activity_main_log);
 
-
         // Toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // Set Date
+        String date_n = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()).format(new Date());
+        TextView date  = (TextView) findViewById(R.id.dateTextView); // Get hold of textview.
+        date.setText(date_n);         // Set it as current date.
 
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -80,9 +79,8 @@ public class mainLogActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        APIHolder apiHolder = retrofit.create(APIHolder.class);
-
-        Call<List<Exercise>> call = apiHolder.getExercises();
+        APIHolder apiHolder = retrofit.create(APIHolder.class); // API
+        Call<List<Exercise>> call = apiHolder.getExercises(); // Call
 
         call.enqueue(new Callback<List<com.example.fitnesstracker.Exercise>>() {
             @Override
@@ -105,6 +103,16 @@ public class mainLogActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<List<com.example.fitnesstracker.Exercise>> call, Throwable t) {
                 ExerciseTextView.setText(t.getMessage()); // Error Message
+            }
+        });
+
+        // Floating action button; Starts template view when clicked
+        FloatingActionButton addExerciseFAB = findViewById(R.id.addExerciseFAB);
+        addExerciseFAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), templateView.class);
+                startActivity(intent);
             }
         });
     }
@@ -159,25 +167,39 @@ public class mainLogActivity extends AppCompatActivity {
 
     @SuppressLint("NewApi")
     public void showCalendar() {
+        DialogFragment dialogfragment = new datePicker();
+        dialogfragment.show(getFragmentManager(), "DatePickerDialog");
+    }
 
-        // Get Current Date
-        final Calendar c = Calendar.getInstance();
-        mYear = c.get(Calendar.YEAR);
-        mMonth = c.get(Calendar.MONTH);
-        mDay = c.get(Calendar.DAY_OF_MONTH);
-        date = findViewById(R.id.logEmptyTextView);
 
-        DatePickerDialog datePickerDialog = new DatePickerDialog(this, R.style.datepicker,
-                new DatePickerDialog.OnDateSetListener() {
+    // Date picker dialog class
+    public static class datePicker extends DialogFragment implements DatePickerDialog.OnDateSetListener{
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState){
+            final Calendar calendar = Calendar.getInstance();
 
-                    @Override
-                    public void onDateSet(DatePicker view, int year,
-                                          int monthOfYear, int dayOfMonth) {
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+            int month = calendar.get(Calendar.MONTH);
+            int year = calendar.get(Calendar.YEAR);
 
-                        date.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+            DatePickerDialog datepickerdialog = new DatePickerDialog(getActivity(),
+                    R.style.datepicker,this,year,month,day);
+            return datepickerdialog;
 
-                    }
-                }, mYear, mMonth, mDay);
-        datePickerDialog.show();
+        }
+
+        // Changes date to selected date in datePicker
+        @Override
+        public void onDateSet(DatePicker view, int year, int monthOfYear,
+                              int dayOfMonth) {
+
+            TextView date = getActivity().findViewById(R.id.dateTextView); // Date Ttextview to be set
+            Calendar calendar = Calendar.getInstance(); // Gets current calendar instance
+            calendar.setTimeInMillis(0); // Sets the time
+            calendar.set(year, monthOfYear, dayOfMonth, 0, 0, 0); // Sets the calendar date to selected date
+            Date SelectedDate = calendar.getTime(); // Gets the new current date
+            String date_n = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()).format(SelectedDate); // Text that matches new calendar date
+            date.setText(date_n); // Changes the date
+        }
     }
 }

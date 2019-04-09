@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#3E4FB2</color>
-    <color name="colorPrimaryDark">#5868C4</color>
+    <color name="colorPrimaryDark">#002782</color>
     <color name="colorAccent">#FFFFFF</color>
     <color name="white">#FFFFFF</color>
     <color name="transparent">#00000000</color>
@@ -9,7 +9,7 @@
     <color name="gradStop">#23A7DB</color> -->
 
     <color name="gradStart">#3E4FB2</color>
-    <color name="gradStop">#7287FF</color>
+    <color name="gradStop">#747be5</color>
 
     <!-- Google Sign in colors -->
     <color name="colorPrimaryGoogle">#039BE5</color>

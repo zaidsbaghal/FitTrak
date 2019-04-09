@@ -1,12 +1,13 @@
 package com.example.fitnesstracker;
 
 import android.content.Intent;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.RelativeLayout;
+import android.view.animation.AlphaAnimation;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,51 +29,32 @@ public class loginActivity extends com.google.firebase.quickstart.auth.java.Base
 
     private static final String TAG = "GoogleActivity";
     private static final int RC_SIGN_IN = 9001;
-
-    // [START declare_auth]
-    private FirebaseAuth mAuth;
-    // [END declare_auth]
-
-    private GoogleSignInClient mGoogleSignInClient;
-    private TextView mStatusTextView;
-    private TextView mDetailTextView;
-
-
-    RelativeLayout rellay1, rellay2;
-
-    Handler handler = new Handler();
-    Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            rellay1.setVisibility(View.VISIBLE);
-            rellay2.setVisibility(View.VISIBLE);
-        }
-    };
+    private AlphaAnimation buttonClick = new AlphaAnimation(1F, 0.7F);
+    private FirebaseAuth mAuth; // Firebase Authentication
+    private GoogleSignInClient mGoogleSignInClient; // Google sign in client
+    private EditText editTextEmail;
+    private EditText editTextPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        // Buttons
+        editTextEmail = findViewById(R.id.loginEditTextEmail);
+        editTextPassword = findViewById(R.id.loginEditTextPassword);
 
-
-        // Button listeners
+        // Google sign in
         findViewById(R.id.googleLoginBtn).setOnClickListener(this);
 
-        // [START config_signin]
-        // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken("79837694775-qo77r15dake58is1hefim29ocb33sgm8.apps.googleusercontent.com")
                 .requestEmail()
                 .build();
-        // [END config_signin]
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
-        // [START initialize_auth]
-        // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
-        // [END initialize_auth]
+
     }
 
     @Override
@@ -83,7 +65,6 @@ public class loginActivity extends com.google.firebase.quickstart.auth.java.Base
         updateUI(currentUser);
     }
 
-    // [START onactivityresult]
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -104,14 +85,11 @@ public class loginActivity extends com.google.firebase.quickstart.auth.java.Base
             }
         }
     }
-    // [END onactivityresult]
 
-    // [START auth_with_google]
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
-        // [START_EXCLUDE silent]
+
         showProgressDialog();
-        // [END_EXCLUDE]
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
@@ -128,20 +106,43 @@ public class loginActivity extends com.google.firebase.quickstart.auth.java.Base
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
                         }
 
-                        // [START_EXCLUDE]
                         hideProgressDialog();
-                        // [END_EXCLUDE]
                     }
                 });
     }
-    // [END auth_with_google]
 
-    // [START signin]
-    private void signIn() {
+    private void signIn(String email, String password) {
+        Log.d(TAG, "signIn:" + email);
+
+        if (!validateForm()) {
+            return;
+        }
+
+        // [START sign_in_with_email]
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signInWithEmail:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            updateUI(user);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInWithEmail:failure", task.getException());
+                            Toast.makeText(loginActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                            updateUI(null);
+                        }
+                    }
+                });
+    }
+
+    private void goToMain() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
-    // [END signin]
 
     private void signOut() {
         // Firebase sign out
@@ -181,17 +182,47 @@ public class loginActivity extends com.google.firebase.quickstart.auth.java.Base
         }
     }
 
+    // Goes to sign up activity when clicked
+    public void goToSignUp(View v){
+        Intent intent = new Intent(this, signUpActivity.class);
+        startActivity(intent);
+    }
+
+    private boolean validateForm() {
+        boolean valid = true;
+
+        String email = editTextEmail.getText().toString();
+        if (TextUtils.isEmpty(email)) {
+            editTextEmail.setError("Required.");
+            valid = false;
+        } else {
+            editTextEmail.setError(null);
+        }
+
+        String password = editTextPassword.getText().toString();
+        if (TextUtils.isEmpty(password)) {
+            editTextPassword.setError("Required.");
+            valid = false;
+        } else {
+            editTextPassword.setError(null);
+        }
+
+        return valid;
+    }
+
     @Override
     public void onClick(View v) {
         int i = v.getId();
         if (i == R.id.googleLoginBtn) {
-            signIn();
+            v.startAnimation(buttonClick);
+            goToMain();
+        } else if (i == R.id.loginBTN){
+            v.startAnimation(buttonClick);
+            signIn(editTextEmail.getText().toString(), editTextPassword.getText().toString());
+        } else if (i == R.id.signUpBTN) {
+            v.startAnimation(buttonClick);
+            goToSignUp(v);
         }
     }
 
-    // Goes to sign up activity when clicked
-    public void goToSignUp(View view){
-        Intent intent = new Intent(this, signUpActivity.class);
-        startActivity(intent);
-    }
 }
