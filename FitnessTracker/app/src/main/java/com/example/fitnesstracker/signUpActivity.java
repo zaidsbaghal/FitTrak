@@ -33,7 +33,7 @@ public class signUpActivity extends AppCompatActivity {
         setContentView(R.layout.sign_up_activity);
 
         // Firebase sign in verification
-        editTextEmail = findViewById(R.id.loginEditTextEmail);
+        editTextEmail = findViewById(R.id.passEditTextEmail);
         editTextPassword = findViewById(R.id.loginEditTextPassword);
         Button createAccount = findViewById(R.id.createAccountBTN);
         mAuth = FirebaseAuth.getInstance();

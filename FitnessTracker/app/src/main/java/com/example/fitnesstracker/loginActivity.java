@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -24,8 +23,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-public class loginActivity extends com.google.firebase.quickstart.auth.java.BaseActivity implements
-        View.OnClickListener {
+public class loginActivity extends com.google.firebase.quickstart.auth.java.BaseActivity {
 
     private static final String TAG = "GoogleActivity";
     private static final int RC_SIGN_IN = 9001;
@@ -41,12 +39,14 @@ public class loginActivity extends com.google.firebase.quickstart.auth.java.Base
         setContentView(R.layout.activity_login);
 
         // Buttons
-        editTextEmail = findViewById(R.id.loginEditTextEmail);
+        editTextEmail = findViewById(R.id.passEditTextEmail);
         editTextPassword = findViewById(R.id.loginEditTextPassword);
+        findViewById(R.id.signUpBTN).setOnClickListener(onClickListener);
+        findViewById(R.id.loginBTN).setOnClickListener(onClickListener);
+        findViewById(R.id.googleLoginBtn).setOnClickListener(onClickListener);
+        findViewById(R.id.forgotPassBtn).setOnClickListener(onClickListener);
 
         // Google sign in
-        findViewById(R.id.googleLoginBtn).setOnClickListener(this);
-
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken("79837694775-qo77r15dake58is1hefim29ocb33sgm8.apps.googleusercontent.com")
                 .requestEmail()
@@ -188,6 +188,12 @@ public class loginActivity extends com.google.firebase.quickstart.auth.java.Base
         startActivity(intent);
     }
 
+    // Goes to sign up activity when clicked
+    public void goToPassReset(View v){
+        Intent intent = new Intent(this, forgotPassActivity.class);
+        startActivity(intent);
+    }
+
     private boolean validateForm() {
         boolean valid = true;
 
@@ -210,19 +216,25 @@ public class loginActivity extends com.google.firebase.quickstart.auth.java.Base
         return valid;
     }
 
-    @Override
-    public void onClick(View v) {
-        int i = v.getId();
-        if (i == R.id.googleLoginBtn) {
-            v.startAnimation(buttonClick);
-            goToMain();
-        } else if (i == R.id.loginBTN){
-            v.startAnimation(buttonClick);
-            signIn(editTextEmail.getText().toString(), editTextPassword.getText().toString());
-        } else if (i == R.id.signUpBTN) {
-            v.startAnimation(buttonClick);
-            goToSignUp(v);
+    // OnClickListener
+    private View.OnClickListener onClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            int i = v.getId();
+            if (i == R.id.googleLoginBtn) {
+                v.startAnimation(buttonClick);
+                goToMain();
+            } else if (i == R.id.loginBTN) {
+                v.startAnimation(buttonClick);
+                signIn(editTextEmail.getText().toString(), editTextPassword.getText().toString());
+            } else if (i == R.id.signUpBTN) {
+                v.startAnimation(buttonClick);
+                goToSignUp(v);
+            } else if (i == R.id.forgotPassBtn) {
+                v.startAnimation(buttonClick);
+                goToPassReset(v);
+            }
         }
-    }
+    };
 
 }

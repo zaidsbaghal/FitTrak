@@ -24,6 +24,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.gson.Gson;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -72,36 +73,44 @@ public class mainLogActivity extends AppCompatActivity {
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         mAuth = FirebaseAuth.getInstance();
 
-        // Retrofit
-        ExerciseTextView = findViewById(R.id.text_view_result);
+        // Retrofit and Gson
+        final Gson gson = new Gson();
+        ExerciseTextView = findViewById(R.id.resultTv);
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://api.myjson.com/")
+                .baseUrl("https://api.myjson.com")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         APIHolder apiHolder = retrofit.create(APIHolder.class); // API
-        Call<List<Exercise>> call = apiHolder.getExercises(); // Call
+        Call<Exercises> call = apiHolder.getExercises(); // Call
 
-        call.enqueue(new Callback<List<com.example.fitnesstracker.Exercise>>() {
+        call.enqueue(new Callback<com.example.fitnesstracker.Exercises>() {
             @Override
-            public void onResponse(Call<List<com.example.fitnesstracker.Exercise>> call, Response<List<com.example.fitnesstracker.Exercise>> response) {
+            public void onResponse(Call<com.example.fitnesstracker.Exercises> call, Response <com.example.fitnesstracker.Exercises> response) {
                 if (!response.isSuccessful()){
                     ExerciseTextView.setText("Code " + response.code());
                     return;
                 }
 
-                List<Exercise> exercises = Arrays.asList(); // List of exercises
+                Exercises exercisesData = response.body(); // List of exercises
+                List<Exercises.Exercise> exercises = exercisesData.getExercises();
 
-                for (Exercise exercise : exercises){ // For each exercise in the exercises list
-                    String content = "";
-                    content += "Name " + exercise.getName() + "\n";
 
+                for (Exercises.Exercise e : exercises){
+                    String content ="";
+                    content+= e.getName() + "\n";
                     ExerciseTextView.append(content);
+                    content = "Weight: " + Integer.toString(e.getSet().getWeight()) + "\n";
+                    ExerciseTextView.append(content);
+                    content = "Reps: " + Integer.toString(e.getSet().getReps()) + "\n";
+                    ExerciseTextView.append(content + "\n");
+
                 }
+
             }
 
             @Override
-            public void onFailure(Call<List<com.example.fitnesstracker.Exercise>> call, Throwable t) {
+            public void onFailure(Call<com.example.fitnesstracker.Exercises> call, Throwable t) {
                 ExerciseTextView.setText(t.getMessage()); // Error Message
             }
         });
