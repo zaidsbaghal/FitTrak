@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="4dp"
-    android:padding="8dp"
-    android:layout_marginHorizontal="8dp"
-    android:layout_marginVertical="4dp">
+    android:layout_marginHorizontal="12dp"
+    android:layout_marginVertical="12dp"
+    android:background="@android:drawable/dialog_holo_light_frame"
+    android:padding="20dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -15,18 +15,19 @@
         android:padding="4dp">
 
         <TextView
+            android:id="@+id/exerciseName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Name of Exercise"
             android:textSize="20sp"
-            android:textStyle="bold"
-            android:id="@+id/exerciseName"/>
+            android:textStyle="bold" />
 
         <android.support.v7.widget.RecyclerView
 
+            android:id="@+id/setsRv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="25sp">
+            android:layout_marginTop="35sp">
 
         </android.support.v7.widget.RecyclerView>
 

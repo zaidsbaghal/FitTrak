@@ -1,5 +1,6 @@
 package com.example.fitnesstracker;
 
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,7 +9,9 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
 
+import com.example.fitnesstracker.Activities.mainLogActivity;
 import com.example.fitnesstracker.Objects.ExercisesData.Exercise;
+import com.example.fitnesstracker.Objects.setAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,10 +23,12 @@ public class exerciseAdapter extends RecyclerView.Adapter<exerciseAdapter.exerci
 
     public static class exerciseViewHolder extends RecyclerView.ViewHolder {
         public TextView exerciseName;
+        public RecyclerView setsRv;
 
         public exerciseViewHolder(View itemView) {
             super(itemView);
-            exerciseName = itemView.findViewById(R.id.exerciseName);
+            exerciseName = itemView.findViewById(R.id.exerciseName); // Name of exercise
+            setsRv = itemView.findViewById(R.id.setsRv); // Recycler view that holds set data for each exercise
         }
     }
     public exerciseAdapter(List<Exercise> exercises){
@@ -46,6 +51,11 @@ public class exerciseAdapter extends RecyclerView.Adapter<exerciseAdapter.exerci
         Exercise current = exercises.get(position); // Item at a specific index
         holder.exerciseName.setText(current.getName());
 
+        // Sets RecyclerView
+        setAdapter setAdapter = new setAdapter(current.getSets());
+        holder.setsRv.setAdapter(setAdapter);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(holder.setsRv.getContext());
+        holder.setsRv.setLayoutManager(layoutManager);
     }
 
     @Override
