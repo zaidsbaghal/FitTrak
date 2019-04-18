@@ -1,10 +1,10 @@
-package com.example.fitnesstracker;
+package com.example.fitnesstracker.Objects;
 
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class Exercises {
+public class ExercisesData {
     private List<Exercise> exercises; // List of all exercise objects
 
     public class Exercise {
@@ -12,11 +12,11 @@ public class Exercises {
         @SerializedName("exerciseID")
         private int exerciseID;
         @SerializedName("templateID")
-        private int templateID;
+        private String templateID;
         @SerializedName("name")
         private String name;
         @SerializedName("sets")
-        private Set set;
+        private List<Set> sets;
 
         public class Set {
             @SerializedName("reps")
@@ -38,7 +38,7 @@ public class Exercises {
             return exerciseID;
         }
 
-        public int getTemplateID() {
+        public String getTemplateID() {
             return templateID;
         }
 
@@ -46,13 +46,16 @@ public class Exercises {
             return name;
         }
 
-        public Set getSet() {
-            return set;
+        public List<Set> getSets() {
+            return sets;
         }
     }
 
     public List<Exercise> getExercises(){
         return exercises;
+    }
+    public void setExercises(List<Exercise> exercises){
+         this.exercises = exercises;
     }
 }
 

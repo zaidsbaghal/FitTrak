@@ -21,6 +21,26 @@
             "package_name": "com.example.fitnesstracker",
             "certificate_hash": "3e958eaf89cb21aab24cc25db8f76f8a0d7f2a16"
           }
+        },
+        {
+          "client_id": "79837694775-hvp6ppcgbujpetn3ohnalb357o12p8ab.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.fitnesstracker",
+            "certificate_hash": "9b6dfd5bbafa2f3c74b0c8f7df333818e6096260"
+          }
+        },
+        {
+          "client_id": "79837694775-m22r3spqppvvinfh0frdfmt721n2dies.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.fitnesstracker",
+            "certificate_hash": "e4043b51ea2bcb7062f7c0db29372fdd807ff159"
+          }
+        },
+        {
+          "client_id": "79837694775-qo77r15dake58is1hefim29ocb33sgm8.apps.googleusercontent.com",
+          "client_type": 3
         }
       ],
       "api_key": [

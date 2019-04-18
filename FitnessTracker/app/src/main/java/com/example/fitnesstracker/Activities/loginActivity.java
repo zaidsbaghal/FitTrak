@@ -1,4 +1,4 @@
-package com.example.fitnesstracker;
+package com.example.fitnesstracker.Activities;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -10,6 +10,7 @@ import android.view.animation.AlphaAnimation;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.fitnesstracker.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -23,7 +24,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-public class loginActivity extends com.google.firebase.quickstart.auth.java.BaseActivity {
+public class loginActivity extends BaseActivity {
 
     private static final String TAG = "GoogleActivity";
     private static final int RC_SIGN_IN = 9001;

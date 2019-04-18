@@ -1,4 +1,4 @@
-package com.google.firebase.quickstart.auth.java;
+package com.example.fitnesstracker.Activities;
 
 import android.app.ProgressDialog;
 import android.content.Context;

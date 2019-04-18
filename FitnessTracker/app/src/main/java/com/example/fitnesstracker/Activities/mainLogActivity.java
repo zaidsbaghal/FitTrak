@@ -1,7 +1,6 @@
-package com.example.fitnesstracker;
+package com.example.fitnesstracker.Activities;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -10,6 +9,8 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,6 +18,10 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.TextView;
 
+import com.example.fitnesstracker.APIHolder;
+import com.example.fitnesstracker.Objects.ExercisesData;
+import com.example.fitnesstracker.R;
+import com.example.fitnesstracker.exerciseAdapter;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -24,14 +29,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.gson.Gson;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -46,9 +48,9 @@ public class mainLogActivity extends AppCompatActivity {
     private TextView ExerciseTextView;
     private FirebaseAuth mAuth; // Firebase authentication
     private GoogleSignInClient mGoogleSignInClient; // Google sign in client
-    private DatePickerDialog calendar; // Popup calendar selector
-    private TextView date;
-    private int mYear, mMonth, mDay;
+    private RecyclerView exerciseHolder; // Recvycler view that holds exercise cards
+    private exerciseAdapter exerciseHolderAdapter; // Bridge between recycler view and data for each card
+    private RecyclerView.LayoutManager exerciseHolderLayoutManager; // Aligning each card
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,44 +76,39 @@ public class mainLogActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         // Retrofit and Gson
-        final Gson gson = new Gson();
-        ExerciseTextView = findViewById(R.id.resultTv);
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://api.myjson.com")
+                .baseUrl("https://workoutapp-api-heroku.herokuapp.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         APIHolder apiHolder = retrofit.create(APIHolder.class); // API
-        Call<Exercises> call = apiHolder.getExercises(); // Call
+        Call<List<ExercisesData.Exercise>> call = apiHolder.getExercises(); // Call
+        List<ExercisesData.Exercise> exercises = null;
+        exerciseHolder = findViewById(R.id.recyclerView);
+        exerciseHolderLayoutManager = new LinearLayoutManager(this);
+        ((LinearLayoutManager) exerciseHolderLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
+        exerciseHolder.setLayoutManager(exerciseHolderLayoutManager);
+        exerciseHolderAdapter = new exerciseAdapter(exercises);
+        exerciseHolder.setAdapter(exerciseHolderAdapter);
 
-        call.enqueue(new Callback<com.example.fitnesstracker.Exercises>() {
+        call.enqueue(new Callback<List<ExercisesData.Exercise>>() {
             @Override
-            public void onResponse(Call<com.example.fitnesstracker.Exercises> call, Response <com.example.fitnesstracker.Exercises> response) {
+            public void onResponse(Call<List<ExercisesData.Exercise>> call, Response <List<ExercisesData.Exercise>> response) {
                 if (!response.isSuccessful()){
-                    ExerciseTextView.setText("Code " + response.code());
                     return;
                 }
+                // Gets exercise data
+                ExercisesData data = new ExercisesData();
+                data.setExercises(response.body());
+                List<ExercisesData.Exercise> exercises = data.getExercises(); // List of exercises
 
-                Exercises exercisesData = response.body(); // List of exercises
-                List<Exercises.Exercise> exercises = exercisesData.getExercises();
-
-
-                for (Exercises.Exercise e : exercises){
-                    String content ="";
-                    content+= e.getName() + "\n";
-                    ExerciseTextView.append(content);
-                    content = "Weight: " + Integer.toString(e.getSet().getWeight()) + "\n";
-                    ExerciseTextView.append(content);
-                    content = "Reps: " + Integer.toString(e.getSet().getReps()) + "\n";
-                    ExerciseTextView.append(content + "\n");
-
-                }
-
+                // Exercise datat is put in recycler view
+                exerciseHolderAdapter = new exerciseAdapter(exercises); // Recycler view Adapter
+                exerciseHolder.setAdapter(exerciseHolderAdapter);
             }
 
             @Override
-            public void onFailure(Call<com.example.fitnesstracker.Exercises> call, Throwable t) {
-                ExerciseTextView.setText(t.getMessage()); // Error Message
+            public void onFailure(Call<List<ExercisesData.Exercise>> call, Throwable t) {
             }
         });
 
