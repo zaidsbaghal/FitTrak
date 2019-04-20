@@ -38,12 +38,20 @@ public class ExercisesData {
             return exerciseID;
         }
 
+        public void deleteExercise(int index){
+            exercises.remove(index);
+        }
+
         public String getTemplateID() {
             return templateID;
         }
 
         public String getName() {
             return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
         }
 
         public List<Set> getSets() {

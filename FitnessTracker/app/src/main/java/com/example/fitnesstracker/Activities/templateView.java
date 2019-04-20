@@ -1,5 +1,6 @@
 package com.example.fitnesstracker.Activities;
 
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -28,11 +29,14 @@ public class templateView extends AppCompatActivity {
     private RecyclerView exerciseHolder; // Recvycler view that holds exercise cards
     private exerciseAdapter exerciseHolderAdapter; // Bridge between recycler view and data for each card
     private RecyclerView.LayoutManager exerciseHolderLayoutManager; // Aligning each card
-
+    private Context mContext;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_template_view);
+
+        //Context
+        mContext = this;
 
         // Toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -52,7 +56,7 @@ public class templateView extends AppCompatActivity {
         exerciseHolderLayoutManager = new LinearLayoutManager(this);
         ((LinearLayoutManager) exerciseHolderLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
         exerciseHolder.setLayoutManager(exerciseHolderLayoutManager);
-        exerciseHolderAdapter = new exerciseAdapter(exercises);
+        exerciseHolderAdapter = new exerciseAdapter(this, exercises);
         exerciseHolder.setAdapter(exerciseHolderAdapter);
 
         call.enqueue(new Callback<List<ExercisesData.Exercise>>() {
@@ -66,8 +70,8 @@ public class templateView extends AppCompatActivity {
                 data.setExercises(response.body());
                 List<ExercisesData.Exercise> exercises = data.getExercises(); // List of exercises
 
-                // Exercise datat is put in recycler view
-                exerciseHolderAdapter = new exerciseAdapter(exercises); // Recycler view Adapter
+                // Exercise data is put in recycler view
+                exerciseHolderAdapter = new exerciseAdapter(mContext, exercises); // Recycler view Adapter
                 exerciseHolder.setAdapter(exerciseHolderAdapter);
             }
 
