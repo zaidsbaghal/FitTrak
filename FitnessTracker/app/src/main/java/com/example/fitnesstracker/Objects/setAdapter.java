@@ -8,14 +8,14 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
 
-import com.example.fitnesstracker.Objects.ExercisesData.Exercise;
+import com.example.fitnesstracker.Objects.ExercisesData.ExerciseBean;
 import com.example.fitnesstracker.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class setAdapter extends RecyclerView.Adapter<setAdapter.setViewHolder>  {
-    private List<Exercise.Set> sets;
+    private List<ExercisesData.ExerciseBean.SetsBean> sets;
 
 
     public static class setViewHolder extends RecyclerView.ViewHolder {
@@ -30,7 +30,7 @@ public class setAdapter extends RecyclerView.Adapter<setAdapter.setViewHolder>  
             setReps = itemView.findViewById(R.id.setReps);
         }
     }
-    public setAdapter(List<Exercise.Set> sets){
+    public setAdapter(List<ExercisesData.ExerciseBean.SetsBean> sets){
         this.sets = sets;
     }
 
@@ -44,9 +44,9 @@ public class setAdapter extends RecyclerView.Adapter<setAdapter.setViewHolder>  
 
     @Override
     public void onBindViewHolder(setViewHolder holder, int position) {
-        Exercise.Set current = sets.get(position); // Item at a specific index
+        ExercisesData.ExerciseBean.SetsBean current = sets.get(position); // Item at a specific index
         holder.setNum.setText(Integer.toString(position + 1));
-        holder.setWeight.setText(Integer.toString(current.getWeight()) + " lbs.");
+        holder.setWeight.setText(Integer.toString(current.getWeights()) + " lbs.");
         holder.setReps.setText(Integer.toString(current.getReps()) + " reps");
     }
 

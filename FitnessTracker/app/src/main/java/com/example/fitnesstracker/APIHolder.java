@@ -1,6 +1,7 @@
 package com.example.fitnesstracker;
 
-import com.example.fitnesstracker.Objects.ExercisesData.Exercise;
+import com.example.fitnesstracker.Objects.ExercisesData;
+import com.example.fitnesstracker.Objects.ExercisesData.ExerciseBean;
 
 import java.util.List;
 
@@ -15,11 +16,13 @@ import retrofit2.http.Path;
 
 public interface APIHolder {
 
-    @GET("exercises")
-    Call<List<Exercise>> getExercises();
+    @GET("users/5cb6474089762f000af18bea/logs/{date}")
+    Call<List<ExercisesData>> getExercises(@Path("date") String date);
 
 
     @DELETE("exercise/{name}")
     Call<String> deleteExercise(@Path("name") String exercise);
+
+
 
 }

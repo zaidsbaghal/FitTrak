@@ -34,6 +34,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.gson.Gson;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -55,10 +56,15 @@ public class mainLogActivity extends AppCompatActivity {
     private RecyclerView exerciseHolder; // Recvycler view that holds exercise cards
     private exerciseAdapter exerciseHolderAdapter; // Bridge between recycler view and data for each card
     private RecyclerView.LayoutManager exerciseHolderLayoutManager; // Aligning each card
-    private List<ExercisesData.Exercise> exercises;
+    private List<ExercisesData> exercisesData;
     private Context mContext;
     private APIHolder apiHolder;
     private Retrofit retrofit;
+    private List<ExercisesData.ExerciseBean> exercises;
+    private int month;
+    private int day;
+    private int year;
+    private String d;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,22 +100,32 @@ public class mainLogActivity extends AppCompatActivity {
 
 
         apiHolder = retrofit.create(APIHolder.class); // API
-        Call<List<ExercisesData.Exercise>> call = apiHolder.getExercises(); // Call
+        Call<List<ExercisesData>> call = apiHolder.getExercises(d); // Call
 
         buildRecyclerView(); // Recycler view set up
 
         // Gets Data
-        call.enqueue(new Callback<List<ExercisesData.Exercise>>() {
+        call.enqueue(new Callback<List<ExercisesData>>() {
             @Override
-            public void onResponse(Call<List<ExercisesData.Exercise>> call, Response <List<ExercisesData.Exercise>> response) {
+            public void onResponse(Call<List<ExercisesData>> call, Response <List<ExercisesData>> response) {
                 if (!response.isSuccessful()){
                     return;
                 }
 
                 // Gets exercise data
-                ExercisesData data = new ExercisesData();
-                data.setExercises(response.body());
-                exercises = data.getExercises(); // List of exercises
+
+                exercisesData = response.body(); // List of exercises
+                exercises= new ArrayList<ExercisesData.ExerciseBean>();
+
+                for (ExercisesData e : exercisesData){
+                    exercises.add(e.get_exercise());
+                }
+                Calendar cal = Calendar.getInstance();
+                int day = cal.get(Calendar.DAY_OF_MONTH);
+                int month = cal.get(Calendar.MONTH);
+                int year = cal.get(Calendar.YEAR);
+
+                d = Integer.toString(month) + Integer.toString(day) + Integer.toString(year);
 
                 // Exercise data is put in recycler view
                 exerciseHolderAdapter = new exerciseAdapter(mContext, exercises); // Recycler view Adapter
@@ -117,7 +133,7 @@ public class mainLogActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<List<ExercisesData.Exercise>> call, Throwable t) {
+            public void onFailure(Call<List<ExercisesData>> call, Throwable t) {
             }
         });
 
@@ -231,7 +247,7 @@ public class mainLogActivity extends AppCompatActivity {
         }
     }
     // Delete exercise route
-    public void deleteExercise(ExercisesData.Exercise exercise) {
+    public void deleteExercise(ExercisesData.ExerciseBean exercise) {
         Gson gson = new Gson();
         String nameJson = gson.toJson(exercise); // Name to be deleted in json
 

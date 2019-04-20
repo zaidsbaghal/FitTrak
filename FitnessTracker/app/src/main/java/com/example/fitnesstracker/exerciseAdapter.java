@@ -16,15 +16,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.fitnesstracker.Activities.mainLogActivity;
-import com.example.fitnesstracker.Objects.ExercisesData.Exercise;
+import com.example.fitnesstracker.Objects.ExercisesData;
+import com.example.fitnesstracker.Objects.ExercisesData.ExerciseBean;
 import com.example.fitnesstracker.Objects.setAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class exerciseAdapter extends RecyclerView.Adapter<exerciseAdapter.exerciseViewHolder> implements Filterable {
-    private List<Exercise> exercises;
-    private List<Exercise> exercisesFull;
+    private List<ExercisesData.ExerciseBean> exercises;
+    private List<ExercisesData.ExerciseBean> exercisesFull;
     private Context mContext;
     private AlphaAnimation buttonClick = new AlphaAnimation(1F, 0.7F);
 
@@ -43,7 +44,7 @@ public class exerciseAdapter extends RecyclerView.Adapter<exerciseAdapter.exerci
 
         }
     }
-    public exerciseAdapter(Context context, List<Exercise> exercises){
+    public exerciseAdapter(Context context, List<ExercisesData.ExerciseBean> exercises){
         this.exercises = exercises;
         if(exercises != null) {
             exercisesFull = new ArrayList<>(exercises);
@@ -60,7 +61,7 @@ public class exerciseAdapter extends RecyclerView.Adapter<exerciseAdapter.exerci
 
     @Override
     public void onBindViewHolder(final exerciseViewHolder holder,final int position) {
-        Exercise current = exercises.get(position); // Item at a specific index
+        ExercisesData.ExerciseBean current = exercises.get(position); // Item at a specific index
         holder.exerciseName.setText(current.getName());
 
         // Sets RecyclerView
@@ -111,14 +112,14 @@ public class exerciseAdapter extends RecyclerView.Adapter<exerciseAdapter.exerci
     private Filter templateFilter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
-            List<Exercise> filteredList = new ArrayList<>(); // List that contains the filtered items
+            List<ExercisesData.ExerciseBean> filteredList = new ArrayList<>(); // List that contains the filtered items
 
             if (constraint == null || constraint.length() == 0){
                 filteredList.addAll(exercisesFull);
             } else {
                 String filterPattern = constraint.toString().toLowerCase().trim(); //
 
-                for (Exercise e: exercisesFull){
+                for (ExercisesData.ExerciseBean e: exercisesFull){
                     if (e.getName().toLowerCase().contains(filterPattern)){
                         filteredList.add(e); // Add filtered exercise to filtered list
                     }
