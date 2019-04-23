@@ -1,7 +1,6 @@
-package com.example.fitnesstracker;
+package com.example.fitnesstracker.Objects;
 
 import android.content.Context;
-import android.net.sip.SipSession;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,9 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.fitnesstracker.Activities.mainLogActivity;
-import com.example.fitnesstracker.Objects.ExercisesData;
-import com.example.fitnesstracker.Objects.ExercisesData.ExerciseBean;
-import com.example.fitnesstracker.Objects.setAdapter;
+import com.example.fitnesstracker.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,8 +85,8 @@ public class exerciseAdapter extends RecyclerView.Adapter<exerciseAdapter.exerci
                 int pos = holder.getAdapterPosition();
                 v.startAnimation(buttonClick);
                 Toast.makeText(mContext, "Delete " + pos, Toast.LENGTH_SHORT).show();
-                exercises.remove(pos);
                 ((mainLogActivity)mContext).deleteExercise(exercises.get(pos));
+                exercises.remove(pos);
                 notifyItemRemoved(pos);
             }
         });

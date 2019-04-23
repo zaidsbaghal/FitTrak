@@ -14,9 +14,8 @@ import android.view.MenuItem;
 import com.example.fitnesstracker.APIHolder;
 import com.example.fitnesstracker.Objects.ExercisesData;
 import com.example.fitnesstracker.R;
-import com.example.fitnesstracker.exerciseAdapter;
+import com.example.fitnesstracker.Objects.exerciseAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -54,40 +53,34 @@ public class templateView extends AppCompatActivity {
                 .build();
 
         APIHolder apiHolder = retrofit.create(APIHolder.class); // API
-        Call<List<ExercisesData>> call = apiHolder.getExercises(""); // Call
-        List<ExercisesData.ExerciseBean> exercises = null;
+        Call<List<ExercisesData.ExerciseBean>> call = apiHolder.getAllExercises(); // Call
+        exercises = null;
         exerciseHolder = findViewById(R.id.templateRv);
         exerciseHolderLayoutManager = new LinearLayoutManager(this);
         ((LinearLayoutManager) exerciseHolderLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
         exerciseHolder.setLayoutManager(exerciseHolderLayoutManager);
         exerciseHolderAdapter = new exerciseAdapter(this, exercises);
         exerciseHolder.setAdapter(exerciseHolderAdapter);
-        exercises = new ArrayList<ExercisesData.ExerciseBean>();;
 
-        final List<ExercisesData.ExerciseBean> finalExercises = exercises;
-        call.enqueue(new Callback<List<ExercisesData>>() {
+
+        call.enqueue(new Callback<List<ExercisesData.ExerciseBean>>() {
                 @Override
-                public void onResponse(Call<List<ExercisesData>> call, Response <List<ExercisesData>> response) {
+                public void onResponse(Call<List<ExercisesData.ExerciseBean>> call, Response <List<ExercisesData.ExerciseBean>> response) {
                     if (!response.isSuccessful()){
                         return;
                     }
 
                     // Gets exercise data
-
-                    exercisesData = response.body(); // List of exercises
-
-                    for (ExercisesData e : exercisesData){
-                        finalExercises.add(e.get_exercise());
-                    }
+                    exercises = response.body(); // List of exercises
 
 
                     // Exercise data is put in recycler view
-                    exerciseHolderAdapter = new exerciseAdapter(mContext, finalExercises); // Recycler view Adapter
+                    exerciseHolderAdapter = new exerciseAdapter(mContext, exercises); // Recycler view Adapter
                     exerciseHolder.setAdapter(exerciseHolderAdapter);
                 }
 
                 @Override
-                public void onFailure(Call<List<ExercisesData>> call, Throwable t) {
+                public void onFailure(Call<List<ExercisesData.ExerciseBean>> call, Throwable t) {
                 }
             });
 

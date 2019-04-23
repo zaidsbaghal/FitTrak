@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.forgotPassActivity"></activity>
+        <activity android:name=".Activities.addExercise"></activity>
+        <activity android:name=".Activities.forgotPassActivity" />
         <activity android:name=".Activities.templateView" />
         <activity android:name=".Activities.mainLogActivity" />
         <activity

@@ -23,7 +23,7 @@ import android.widget.Toast;
 import com.example.fitnesstracker.APIHolder;
 import com.example.fitnesstracker.Objects.ExercisesData;
 import com.example.fitnesstracker.R;
-import com.example.fitnesstracker.exerciseAdapter;
+import com.example.fitnesstracker.Objects.exerciseAdapter;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -41,7 +41,6 @@ import java.util.Locale;
 import java.util.Calendar;
 import java.util.List;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -56,15 +55,13 @@ public class mainLogActivity extends AppCompatActivity {
     private RecyclerView exerciseHolder; // Recvycler view that holds exercise cards
     private exerciseAdapter exerciseHolderAdapter; // Bridge between recycler view and data for each card
     private RecyclerView.LayoutManager exerciseHolderLayoutManager; // Aligning each card
-    private List<ExercisesData> exercisesData;
-    private Context mContext;
-    private APIHolder apiHolder;
-    private Retrofit retrofit;
-    private List<ExercisesData.ExerciseBean> exercises;
-    private int month;
-    private int day;
-    private int year;
-    private String d;
+    private List<ExercisesData> exercisesData; // Exercise data objects; Holdes other relevant data besides the exercise objects
+    private Context mContext; //  Current context
+    private APIHolder apiHolder; // Api routes
+    private Retrofit retrofit; // Retorift client
+    private List<ExercisesData.ExerciseBean> exercises; // List of exercises for user
+    private static String dateJson;
+    private Call<List<ExercisesData>> call; // Call made to api holder
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,44 +95,11 @@ public class mainLogActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
+        // Sets date for data grab; (Is reset when using datepicker dialog)
+        dateJson = new SimpleDateFormat("MMddyy", Locale.getDefault()).format(new Date()); // Date in JSON Format for
 
         apiHolder = retrofit.create(APIHolder.class); // API
-        Call<List<ExercisesData>> call = apiHolder.getExercises(d); // Call
-
-        buildRecyclerView(); // Recycler view set up
-
-        // Gets Data
-        call.enqueue(new Callback<List<ExercisesData>>() {
-            @Override
-            public void onResponse(Call<List<ExercisesData>> call, Response <List<ExercisesData>> response) {
-                if (!response.isSuccessful()){
-                    return;
-                }
-
-                // Gets exercise data
-
-                exercisesData = response.body(); // List of exercises
-                exercises= new ArrayList<ExercisesData.ExerciseBean>();
-
-                for (ExercisesData e : exercisesData){
-                    exercises.add(e.get_exercise());
-                }
-                Calendar cal = Calendar.getInstance();
-                int day = cal.get(Calendar.DAY_OF_MONTH);
-                int month = cal.get(Calendar.MONTH);
-                int year = cal.get(Calendar.YEAR);
-
-                d = Integer.toString(month) + Integer.toString(day) + Integer.toString(year);
-
-                // Exercise data is put in recycler view
-                exerciseHolderAdapter = new exerciseAdapter(mContext, exercises); // Recycler view Adapter
-                exerciseHolder.setAdapter(exerciseHolderAdapter);
-            }
-
-            @Override
-            public void onFailure(Call<List<ExercisesData>> call, Throwable t) {
-            }
-        });
+        getExerciseData(dateJson); // Gets data
 
 
         // Floating action button; Starts template view when clicked
@@ -150,17 +114,6 @@ public class mainLogActivity extends AppCompatActivity {
     }
 
 
-
-    // Recycler View
-    public void buildRecyclerView() {
-        exercises = null;
-        exerciseHolder = findViewById(R.id.recyclerView);
-        exerciseHolderLayoutManager = new LinearLayoutManager(this);
-        ((LinearLayoutManager) exerciseHolderLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
-        exerciseHolder.setLayoutManager(exerciseHolderLayoutManager);
-        exerciseHolderAdapter = new exerciseAdapter(this, exercises);
-        exerciseHolder.setAdapter(exerciseHolderAdapter);
-    }
 
     // Options menu for toolbar
     @Override
@@ -236,31 +189,78 @@ public class mainLogActivity extends AppCompatActivity {
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear,
                               int dayOfMonth) {
-
             TextView date = getActivity().findViewById(R.id.dateTextView); // Date text view to be set
             Calendar calendar = Calendar.getInstance(); // Gets current calendar instance
             calendar.setTimeInMillis(0); // Sets the time
             calendar.set(year, monthOfYear, dayOfMonth, 0, 0, 0); // Sets the calendar date to selected date
             Date SelectedDate = calendar.getTime(); // Gets the new current date
             String date_n = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()).format(SelectedDate); // Text that matches new calendar date
+            dateJson = new SimpleDateFormat("MMddyy", Locale.getDefault()).format(SelectedDate); // Text that matches new calendar date
             date.setText(date_n); // Changes the date
+            ((mainLogActivity) getActivity()).getExerciseData(dateJson); // Gets data for that date
         }
     }
+
+    // Recycler View
+    public void buildRecyclerView() {
+        exercises = null;
+        exerciseHolder = findViewById(R.id.recyclerView);
+        exerciseHolderLayoutManager = new LinearLayoutManager(this);
+        ((LinearLayoutManager) exerciseHolderLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
+        exerciseHolder.setLayoutManager(exerciseHolderLayoutManager);
+        exerciseHolderAdapter = new exerciseAdapter(this, exercises);
+        exerciseHolder.setAdapter(exerciseHolderAdapter);
+    }
+
+    // Gets relevant exercise data
+    public void getExerciseData(String dateJson){
+        call = apiHolder.getExercises(dateJson); // Call with current date
+        buildRecyclerView(); // Recycler view set up
+        // Gets Data
+        call.enqueue(new Callback<List<ExercisesData>>() {
+            @Override
+            public void onResponse(Call<List<ExercisesData>> call, Response <List<ExercisesData>> response) {
+                if (!response.isSuccessful()){
+                    return;
+                }
+
+                // Gets exercise data
+                exercisesData = response.body(); // List of exercises
+                exercises = new ArrayList<ExercisesData.ExerciseBean>();
+
+                // Gets exercise objects from each exercise data object
+                for (ExercisesData e : exercisesData){
+                    exercises.add(e.get_exercise());
+                }
+
+                // Exercise data is put in recycler view
+                exerciseHolderAdapter = new exerciseAdapter(mContext, exercises); // Recycler view Adapter
+                exerciseHolder.setAdapter(exerciseHolderAdapter);
+            }
+
+            @Override
+            public void onFailure(Call<List<ExercisesData>> call, Throwable t) {
+                // Do something on failure
+            }
+        });
+    }
+
     // Delete exercise route
     public void deleteExercise(ExercisesData.ExerciseBean exercise) {
         Gson gson = new Gson();
-        String nameJson = gson.toJson(exercise); // Name to be deleted in json
+        String idJson = gson.toJson(exercise.get_id()); // Id to be deleted in json
+        final String name = exercise.getName();
 
-        Call<String> call = apiHolder.deleteExercise(nameJson);
+        Call<String> call = apiHolder.deleteExercise(dateJson, idJson);
 
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-                Toast.makeText(mContext, "Success?", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Deleted " + name, Toast.LENGTH_SHORT).show();
             }
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                Toast.makeText(mContext, "Failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Failed to delete " + name, Toast.LENGTH_SHORT).show();
             }
         });
     }
