@@ -10,6 +10,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -34,8 +35,7 @@ public interface APIHolder {
 
     // Deletes Exercise by id
     @POST("users/5cb6474089762f000af18bea/logs/{date}/delete_exercise")
-    Call<String> deleteExercise(@Path("date") String date, @Body String id);
-
+    Call<Void> deleteExercise(@Path("date") String date, @Body ExercisesData ed);
 
 
 }

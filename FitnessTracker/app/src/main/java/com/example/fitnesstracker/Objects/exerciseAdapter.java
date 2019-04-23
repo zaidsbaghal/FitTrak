@@ -1,6 +1,8 @@
 package com.example.fitnesstracker.Objects;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -73,8 +75,6 @@ public class exerciseAdapter extends RecyclerView.Adapter<exerciseAdapter.exerci
             public void onClick(View v) {
                 int pos = holder.getAdapterPosition();
                 v.startAnimation(buttonClick);
-                Toast.makeText(mContext, "Click " + pos, Toast.LENGTH_SHORT).show();
-
             }
         });
 
@@ -82,9 +82,9 @@ public class exerciseAdapter extends RecyclerView.Adapter<exerciseAdapter.exerci
         holder.deleteExercise.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 int pos = holder.getAdapterPosition();
                 v.startAnimation(buttonClick);
-                Toast.makeText(mContext, "Delete " + pos, Toast.LENGTH_SHORT).show();
                 ((mainLogActivity)mContext).deleteExercise(exercises.get(pos));
                 exercises.remove(pos);
                 notifyItemRemoved(pos);
@@ -135,4 +135,5 @@ public class exerciseAdapter extends RecyclerView.Adapter<exerciseAdapter.exerci
             notifyDataSetChanged();
         }
     };
+
 }

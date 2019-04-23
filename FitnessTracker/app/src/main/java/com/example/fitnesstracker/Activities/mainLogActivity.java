@@ -41,6 +41,8 @@ import java.util.Locale;
 import java.util.Calendar;
 import java.util.List;
 
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -60,8 +62,9 @@ public class mainLogActivity extends AppCompatActivity {
     private APIHolder apiHolder; // Api routes
     private Retrofit retrofit; // Retorift client
     private List<ExercisesData.ExerciseBean> exercises; // List of exercises for user
-    private static String dateJson;
+    private static String dateJson; // Stores date in specific format for routes
     private Call<List<ExercisesData>> call; // Call made to api holder
+    private TextView logEmpty;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +79,9 @@ public class mainLogActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Log Empty
+        logEmpty=findViewById(R.id.logEmptyTv);
+
         // Set Date
         String date_n = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()).format(new Date());
         TextView date  = (TextView) findViewById(R.id.dateTextView); // Get hold of textview.
@@ -89,9 +95,15 @@ public class mainLogActivity extends AppCompatActivity {
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         mAuth = FirebaseAuth.getInstance();
 
+        // Logging interceptor
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+
         // Retrofit and Gson
         retrofit = new Retrofit.Builder()
                 .baseUrl("https://workoutapp-api-heroku.herokuapp.com/")
+                .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -233,6 +245,15 @@ public class mainLogActivity extends AppCompatActivity {
                     exercises.add(e.get_exercise());
                 }
 
+                // Log empty visibility
+                if (exercises == null || exercises.isEmpty()){
+                    exerciseHolder.setVisibility(View.GONE);
+                } else {
+                    logEmpty.setVisibility(View.GONE);
+                    exerciseHolder.setVisibility(View.VISIBLE);
+
+                }
+
                 // Exercise data is put in recycler view
                 exerciseHolderAdapter = new exerciseAdapter(mContext, exercises); // Recycler view Adapter
                 exerciseHolder.setAdapter(exerciseHolderAdapter);
@@ -243,23 +264,32 @@ public class mainLogActivity extends AppCompatActivity {
                 // Do something on failure
             }
         });
+
     }
 
     // Delete exercise route
     public void deleteExercise(ExercisesData.ExerciseBean exercise) {
         Gson gson = new Gson();
-        String idJson = gson.toJson(exercise.get_id()); // Id to be deleted in json
-        final String name = exercise.getName();
+        String idJson =""; // Id of ExercisesData Object
+        final String name = exercise.getName(); // Name of exercise
+        ExercisesData ed = new ExercisesData();
+        // For each exercises data get the id if the its exercise objects name matches exercise name
+        for (ExercisesData d: exercisesData){
+            if (d.get_exercise().getName().equals(name)){
+                ed.set_id(d.get_id());
+                break;
+            }
+        }
 
-        Call<String> call = apiHolder.deleteExercise(dateJson, idJson);
+        Call<Void> call = apiHolder.deleteExercise(dateJson, ed);
 
-        call.enqueue(new Callback<String>() {
+        call.enqueue(new Callback<Void>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                Toast.makeText(mContext, "Deleted " + name, Toast.LENGTH_SHORT).show();
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                Toast.makeText(mContext,  "Deleted " + name, Toast.LENGTH_SHORT).show();
             }
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
+            public void onFailure(Call<Void> call, Throwable t) {
                 Toast.makeText(mContext, "Failed to delete " + name, Toast.LENGTH_SHORT).show();
             }
         });

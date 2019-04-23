@@ -1,8 +1,11 @@
 package com.example.fitnesstracker.Objects;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 public class ExercisesData {
+    @SerializedName("_id")
     private String _id;
     private String _date;
     private String _userid;
