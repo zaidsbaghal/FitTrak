@@ -47,7 +47,7 @@
             android:src="@drawable/ic_delete"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:backgroundTint="@color/grey_500"/>
+            android:tint="@color/grey_500"/>
 
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>

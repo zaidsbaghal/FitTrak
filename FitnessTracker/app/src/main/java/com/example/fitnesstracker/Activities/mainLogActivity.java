@@ -40,6 +40,8 @@ import java.util.Locale;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -54,7 +56,7 @@ public class mainLogActivity extends AppCompatActivity {
     private TextView ExerciseTextView;
     private FirebaseAuth mAuth; // Firebase authentication
     private GoogleSignInClient mGoogleSignInClient; // Google sign in client
-    private RecyclerView exerciseHolder; // Recvycler view that holds exercise cards
+    private static RecyclerView exerciseHolder; // Recvycler view that holds exercise cards
     private exerciseAdapter exerciseHolderAdapter; // Bridge between recycler view and data for each card
     private RecyclerView.LayoutManager exerciseHolderLayoutManager; // Aligning each card
     private List<ExercisesData> exercisesData; // Exercise data objects; Holdes other relevant data besides the exercise objects
@@ -64,7 +66,11 @@ public class mainLogActivity extends AppCompatActivity {
     private List<ExercisesData.ExerciseBean> exercises; // List of exercises for user
     private static String dateJson; // Stores date in specific format for routes
     private Call<List<ExercisesData>> call; // Call made to api holder
-    private TextView logEmpty;
+    private Calendar calendar;
+    private int mYear;
+    private int mMonth;
+    private int mDay;
+    public static TextView logEmpty;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,10 +85,11 @@ public class mainLogActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // Log Empty
-        logEmpty=findViewById(R.id.logEmptyTv);
+        // Log Empty Text View
+        logEmpty = findViewById(R.id.logEmptyTv);
 
         // Set Date
+        calendar = Calendar.getInstance();
         String date_n = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()).format(new Date());
         TextView date  = (TextView) findViewById(R.id.dateTextView); // Get hold of textview.
         date.setText(date_n);         // Set it as current date.
@@ -109,23 +116,18 @@ public class mainLogActivity extends AppCompatActivity {
 
         // Sets date for data grab; (Is reset when using datepicker dialog)
         dateJson = new SimpleDateFormat("MMddyy", Locale.getDefault()).format(new Date()); // Date in JSON Format for
-
         apiHolder = retrofit.create(APIHolder.class); // API
-        getExerciseData(dateJson); // Gets data
-
 
         // Floating action button; Starts template view when clicked
         FloatingActionButton addExerciseFAB = findViewById(R.id.addExerciseFAB);
         addExerciseFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), templateView.class);
+                Intent intent = new Intent(v.getContext(), addExercise.class);
                 startActivity(intent);
             }
         });
     }
-
-
 
     // Options menu for toolbar
     @Override
@@ -180,16 +182,14 @@ public class mainLogActivity extends AppCompatActivity {
         dialogfragment.show(getFragmentManager(), "DatePickerDialog");
     }
 
-
     // Date picker dialog class
     public static class datePicker extends DialogFragment implements DatePickerDialog.OnDateSetListener{
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState){
-            final Calendar calendar = Calendar.getInstance();
 
-            int day = calendar.get(Calendar.DAY_OF_MONTH);
-            int month = calendar.get(Calendar.MONTH);
-            int year = calendar.get(Calendar.YEAR);
+            int day = ((mainLogActivity) getActivity()).calendar.get(Calendar.DAY_OF_MONTH);
+            int month = ((mainLogActivity) getActivity()).calendar.get(Calendar.MONTH);
+            int year = ((mainLogActivity) getActivity()).calendar.get(Calendar.YEAR);
 
             DatePickerDialog datepickerdialog = new DatePickerDialog(getActivity(),
                     R.style.datepicker,this,year,month,day);
@@ -202,14 +202,17 @@ public class mainLogActivity extends AppCompatActivity {
         public void onDateSet(DatePicker view, int year, int monthOfYear,
                               int dayOfMonth) {
             TextView date = getActivity().findViewById(R.id.dateTextView); // Date text view to be set
-            Calendar calendar = Calendar.getInstance(); // Gets current calendar instance
-            calendar.setTimeInMillis(0); // Sets the time
-            calendar.set(year, monthOfYear, dayOfMonth, 0, 0, 0); // Sets the calendar date to selected date
-            Date SelectedDate = calendar.getTime(); // Gets the new current date
+            ((mainLogActivity) getActivity()).calendar = Calendar.getInstance(); // Gets current calendar instance
+            ((mainLogActivity) getActivity()).calendar.setTimeInMillis(0); // Sets the time
+            ((mainLogActivity) getActivity()).calendar.set(year, monthOfYear, dayOfMonth, 0, 0, 0); // Sets the calendar date to selected date
+            ((mainLogActivity) getActivity()).mYear = year;
+            ((mainLogActivity) getActivity()).mMonth = monthOfYear;
+            ((mainLogActivity) getActivity()).mDay = dayOfMonth;
+            Date SelectedDate = ((mainLogActivity) getActivity()).calendar.getTime(); // Gets the new current date
             String date_n = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()).format(SelectedDate); // Text that matches new calendar date
-            dateJson = new SimpleDateFormat("MMddyy", Locale.getDefault()).format(SelectedDate); // Text that matches new calendar date
+            ((mainLogActivity) getActivity()).dateJson = new SimpleDateFormat("MMddyy", Locale.getDefault()).format(SelectedDate); // Text that matches new calendar date
             date.setText(date_n); // Changes the date
-            ((mainLogActivity) getActivity()).getExerciseData(dateJson); // Gets data for that date
+            ((mainLogActivity) getActivity()).getExerciseData(((mainLogActivity) getActivity()).dateJson); // Gets data for that date
         }
     }
 
@@ -248,10 +251,10 @@ public class mainLogActivity extends AppCompatActivity {
                 // Log empty visibility
                 if (exercises == null || exercises.isEmpty()){
                     exerciseHolder.setVisibility(View.GONE);
+                    logEmpty.setVisibility(View.VISIBLE);
                 } else {
                     logEmpty.setVisibility(View.GONE);
                     exerciseHolder.setVisibility(View.VISIBLE);
-
                 }
 
                 // Exercise data is put in recycler view
@@ -294,4 +297,21 @@ public class mainLogActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getExerciseData(dateJson);
+        exerciseHolderAdapter.notifyDataSetChanged();
+
+    }
+
+    public static String getDate(){
+        return dateJson;
+    }
+    public static void setVisible(){
+        logEmpty.setVisibility(View.VISIBLE);
+        exerciseHolder.setVisibility(View.GONE);
+    }
+
 }

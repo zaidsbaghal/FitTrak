@@ -2,6 +2,7 @@ package com.example.fitnesstracker;
 
 import com.example.fitnesstracker.Objects.ExercisesData;
 import com.example.fitnesstracker.Objects.ExercisesData.ExerciseBean;
+import com.example.fitnesstracker.Objects.date;
 
 import java.util.List;
 
@@ -27,11 +28,11 @@ public interface APIHolder {
 
     // Post an exercise; Needs to be called with the below post method
     @POST("exercises")
-    Call<Void> postExercise();
+    Call<Void> postExercise(@Body ExerciseBean e);
 
     // Post a posted exercise with the right date; Needs to be called with the above post method
     @POST("users/5cb6474089762f000af18bea/logs/{name}")
-    Call<Void> postExerciseDate(@Path("name") String name, @Body String date) ;
+    Call<Void> postExerciseDate(@Path("name") String name, @Body date d) ;
 
     // Deletes Exercise by id
     @POST("users/5cb6474089762f000af18bea/logs/{date}/delete_exercise")

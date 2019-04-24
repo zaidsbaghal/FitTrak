@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.addExercise">
+    tools:context=".Activities.addExercise"
+    android:background="@color/grey_300">
 
     <include
         android:id="@+id/toolbar"
@@ -13,41 +14,56 @@
         tools:layout_editor_absoluteY="173dp"/>
 
     <EditText
-        android:id="@+id/addExerciseName"
-        android:layout_width="match_parent"
+        android:id="@+id/addExerciseNameEt"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="12dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="12dp"
+        android:backgroundTint="@color/grey_500"
         android:ems="10"
-        android:hint="Exercise Name"
-        android:inputType="textPersonName"
+        android:hint="Exercise name"
+        android:inputType="textCapWords"
+        android:textCursorDrawable="@color/grey_500"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="Add Set"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addExerciseName" />
-
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/addSetsRv"
         android:layout_width="395dp"
-        android:layout_height="550dp"
-        android:layout_marginStart="8dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="12dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button" />
+        app:layout_constraintTop_toBottomOf="@+id/addExerciseNameEt" />
+
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/addExerciseCl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="112dp">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/addSetFAB"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:clickable="true"
+            app:borderWidth="0dp"
+            app:fabSize="normal"
+            app:srcCompat="@drawable/ic_playlist_add" />
+    </android.support.design.widget.CoordinatorLayout>
 
 </android.support.constraint.ConstraintLayout>

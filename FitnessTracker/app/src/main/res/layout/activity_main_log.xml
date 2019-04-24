@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Activities.mainLogActivity"
-    android:backgroundTint="@color/grey_100">
+    android:background="@color/grey_300">
 
     <include
         android:id="@+id/toolbar"
@@ -15,15 +15,12 @@
 
     <TextView
         android:id="@+id/dateTextView"
-        android:layout_width="149dp"
-        android:layout_height="32dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="26dp"
         android:gravity="center"
-        android:textSize="20dp"
+        android:textSize="18dp"
         android:textStyle="bold"
+        android:background="@color/grey_100"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -34,7 +31,6 @@
         android:id="@+id/dateDivider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="8dp"
         android:background="@android:color/darker_gray"
         app:layout_constraintTop_toBottomOf="@+id/dateTextView" />
 
@@ -61,13 +57,12 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:backgroundTint="@color/grey_100"
         android:scrollbars="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dateDivider"
-        android:background="@color/grey_100">
+        android:background="@color/grey_300">
 
     </android.support.v7.widget.RecyclerView>
 

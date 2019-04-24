@@ -33,6 +33,7 @@ public class exerciseAdapter extends RecyclerView.Adapter<exerciseAdapter.exerci
         public RecyclerView setsRv;
         public ImageView deleteExercise;
         public CardView card;
+        public TextView logEmpty;
 
         public exerciseViewHolder(View itemView) {
             super(itemView);
@@ -40,7 +41,7 @@ public class exerciseAdapter extends RecyclerView.Adapter<exerciseAdapter.exerci
             setsRv = itemView.findViewById(R.id.setsRv); // Recycler view that holds set data for each exercise
             deleteExercise = itemView.findViewById(R.id.exerciseDelete);
             card = itemView.findViewById(R.id.exerciseCard);
-
+            logEmpty = itemView.findViewById(R.id.logEmptyTv);
         }
     }
     public exerciseAdapter(Context context, List<ExercisesData.ExerciseBean> exercises){
@@ -82,12 +83,14 @@ public class exerciseAdapter extends RecyclerView.Adapter<exerciseAdapter.exerci
         holder.deleteExercise.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 int pos = holder.getAdapterPosition();
                 v.startAnimation(buttonClick);
                 ((mainLogActivity)mContext).deleteExercise(exercises.get(pos));
                 exercises.remove(pos);
                 notifyItemRemoved(pos);
+                if (exercises.isEmpty()){
+                    mainLogActivity.setVisible();
+                }
             }
         });
     }
@@ -97,7 +100,6 @@ public class exerciseAdapter extends RecyclerView.Adapter<exerciseAdapter.exerci
         if (exercises == null){
             return 0;
         }
-
         return exercises.size();
     }
 
