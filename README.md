@@ -19,3 +19,7 @@ Blog posts and updates can be found on my website [here](https://www.zaidsbaghal
 * Create templates of each exercise in order to be reused
 * Graph and data view to look at exercise progress over time
 * UI and speed imporvements
+
+## Acknowledgements 
+
+* Everyone at [RUMAD](https://rumad.club/)
