@@ -8,7 +8,7 @@ Blog posts and updates can be found on my website [here](https://www.zaidsbaghal
 
 ## Features
 
-* Save data with online account(Email or google sign-in)
+* Save data with online account (Email or google sign-in)
 * Creation of custom exercises
 * Customize weights, reps and sets for eah exercise
 
